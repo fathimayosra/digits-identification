@@ -1,0 +1,35 @@
+from keras.models import Sequential
+from keras.layers import Dense, Dropout, Flatten, Conv2D, MaxPool2D
+#Import Data
+from keras.datasets import mnist
+
+(x_train, y_train), (x_test, y_test) = mnist.load_data()
+#Normalize Data
+x_train = x_train.reshape(60000, 28, 28, 1)/255
+x_test = x_test.reshape(10000, 28, 28, 1)/255
+#Define CNN
+model = Sequential()
+
+model.add(Conv2D(filters = 32, kernel_size = (3,3),padding = 'Same', 
+                 activation ='relu', input_shape = (28,28,1)))
+model.add(MaxPool2D(pool_size=(2,2)))
+model.add(Flatten())
+model.add(Dense(128, activation = "relu"))
+model.add(Dense(10, activation = "softmax"))
+model.summary()
+
+
+#Choosing Hyper-Parameters
+model.compile(optimizer = "adam" , loss = "sparse_categorical_crossentropy", metrics=["accuracy"])
+#Train Model
+model.fit(x_train, y_train, epochs=10)
+
+
+#Results
+loss, accuracy = model.evaluate(x_test, y_test)
+
+print("loss = ")
+print(loss)
+print("accuracy = ")
+print (accuracy)
+
